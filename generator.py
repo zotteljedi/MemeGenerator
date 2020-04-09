@@ -3,36 +3,42 @@ import textwrap
 import argparse
 
 
-def generate_meme(image_path, top_text, bottom_text, font_path='./res/fonts/impact.ttf', font_size=9):
-    image = Image.open(image_path)
-    draw = ImageDraw.Draw(image)
-    image_width, image_height = image.size
+class Generator:
 
-    font = ImageFont.truetype(font=font_path, size=int(image_height * font_size) // 100)
+    def __init__(self, font_path='./res/fonts/impact.ttf', font_size=9):
+        self.font_path = font_path
+        self.font_size = font_size
 
-    top_text = top_text.upper()
-    bottom_text = bottom_text.upper()
+    def create(self, image_path, top_text, bottom_text):
+        image = Image.open(image_path)
+        draw = ImageDraw.Draw(image)
+        image_width, image_height = image.size
 
-    char_width, char_height = font.getsize('A')
-    chars_per_line = image_width // char_width
-    top_lines = textwrap.wrap(top_text, width=chars_per_line)
-    bottom_lines = textwrap.wrap(bottom_text, width=chars_per_line)
+        font = ImageFont.truetype(font=self.font_path, size=int(image_height * self.font_size) // 100)
 
-    y = 10
-    for line in top_lines:
-        line_width, line_height = font.getsize(line)
-        x = (image_width - line_width) / 2
-        draw.text((x, y), line, fill='white', font=font)
-        y += line_height
+        top_text = top_text.upper()
+        bottom_text = bottom_text.upper()
 
-    y = image_height - char_height * len(bottom_lines) - 15
-    for line in bottom_lines:
-        line_width, line_height = font.getsize(line)
-        x = (image_width - line_width) / 2
-        draw.text((x, y), line, fill='white', font=font)
-        y += line_height
+        char_width, char_height = font.getsize('A')
+        chars_per_line = image_width // char_width
+        top_lines = textwrap.wrap(top_text, width=chars_per_line)
+        bottom_lines = textwrap.wrap(bottom_text, width=chars_per_line)
 
-    image.save('meme_' + image.filename.split('/')[-1])
+        y = 10
+        for line in top_lines:
+            line_width, line_height = font.getsize(line)
+            x = (image_width - line_width) / 2
+            draw.text((x, y), line, fill='white', font=font)
+            y += line_height
+
+        y = image_height - char_height * len(bottom_lines) - 15
+        for line in bottom_lines:
+            line_width, line_height = font.getsize(line)
+            x = (image_width - line_width) / 2
+            draw.text((x, y), line, fill='white', font=font)
+            y += line_height
+
+        image.save('meme_' + image.filename.split('/')[-1])
 
 
 if '__main__' == __name__:
@@ -42,4 +48,5 @@ if '__main__' == __name__:
     ap.add_argument("--bottom", default='', required=False, help="Bottom text over the image.")
     args = vars(ap.parse_args())
 
-    generate_meme(args['image'], args['top'], args['bottom'])
+    generator = Generator()
+    generator.create(args['image'], args['top'], args['bottom'])
