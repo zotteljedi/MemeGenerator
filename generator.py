@@ -18,6 +18,13 @@ def generate_meme(image_path, top_text, bottom_text, font_path='./res/fonts/impa
     top_lines = textwrap.wrap(top_text, width=chars_per_line)
     bottom_lines = textwrap.wrap(bottom_text, width=chars_per_line)
 
+    y = 10
+    for line in top_lines:
+        line_width, line_height = font.getsize(line)
+        x = (image_width - line_width) / 2
+        draw.text((x, y), line, fill='white', font=font)
+        y += line_height
+
 if '__main__' == __name__:
     ap = argparse.ArgumentParser()
     ap.add_argument("-i", "--image", required=True, help="File path to the image.")
