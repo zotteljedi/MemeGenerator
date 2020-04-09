@@ -32,6 +32,9 @@ def generate_meme(image_path, top_text, bottom_text, font_path='./res/fonts/impa
         draw.text((x, y), line, fill='white', font=font)
         y += line_height
 
+    image.save('meme_' + image.filename.split('/')[-1])
+
+
 if '__main__' == __name__:
     ap = argparse.ArgumentParser()
     ap.add_argument("-i", "--image", required=True, help="File path to the image.")
